@@ -1,39 +1,84 @@
-const cards = document.querySelectorAll(".card");
+// Загружаем данные из файла
+fetch("./data/cards.txt")
+  .then((response) => response.text())
+  .then((data) => {
+    const lines = data.trim().split("\n");
 
-// Показываем значения сразу
-cards.forEach((card) => {
-  card.textContent = card.dataset.value;
-});
+    // Парсим строки в объекты: { german: "...", russian: "..." }
+    const words = lines.map((line, index) => {
+      const [de, ru] = line.replace(/"/g, "").split(",");
+      return {
+        id: index, // сохраняем индекс для сравнения
+        german: de.trim(),
+        russian: ru.trim(),
+      };
+    });
 
-let selectedCards = [];
+    // Копируем и перемешиваем
+    const germanWords = shuffleArray([...words]);
+    const russianWords = shuffleArray([...words]);
 
-cards.forEach((card) => {
-  card.addEventListener("click", () => {
-    if (card.classList.contains("matched") || selectedCards.includes(card))
-      return;
+    // Создаём карточки
+    createCards(germanWords, "question-cards", "german");
+    createCards(russianWords, "answer-cards", "russian");
 
-    card.classList.add("selected");
-    selectedCards.push(card);
+    // Запускаем логику сравнения
+    initMatching();
+  });
 
-    if (selectedCards.length === 2) {
-      const [first, second] = selectedCards;
+// Функция генерации карточек
+function createCards(wordList, containerClass, lang) {
+  const container = document.querySelector(`.${containerClass}`);
+  wordList.forEach((word) => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.dataset.value = word.id;
+    card.textContent = lang === "german" ? word.german : word.russian;
+    container.appendChild(card);
+  });
+}
 
-      if (first.dataset.value === second.dataset.value) {
-        first.classList.add("matched");
-        second.classList.add("matched");
-      } else {
-        first.classList.add("wrong");
-        second.classList.add("wrong");
+// Логика сравнения карточек
+function initMatching() {
+  const cards = document.querySelectorAll(".card");
+  let selectedCards = [];
+
+  cards.forEach((card) => {
+    card.addEventListener("click", () => {
+      if (card.classList.contains("matched") || selectedCards.includes(card))
+        return;
+
+      card.classList.add("selected");
+      selectedCards.push(card);
+
+      if (selectedCards.length === 2) {
+        const [first, second] = selectedCards;
+
+        if (first.dataset.value === second.dataset.value) {
+          first.classList.add("matched");
+          second.classList.add("matched");
+        } else {
+          first.classList.add("wrong");
+          second.classList.add("wrong");
+          setTimeout(() => {
+            first.classList.remove("wrong", "selected");
+            second.classList.remove("wrong", "selected");
+          }, 1000);
+        }
 
         setTimeout(() => {
-          first.classList.remove("wrong");
-          second.classList.remove("wrong");
+          selectedCards = [];
         }, 1000);
       }
-
-      // Снимаем выделение с выбранных карточек
-      selectedCards.forEach((c) => c.classList.remove("selected"));
-      selectedCards = [];
-    }
+    });
   });
-});
+}
+
+// Функция перемешивания
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
