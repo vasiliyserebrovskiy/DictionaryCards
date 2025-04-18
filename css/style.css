@@ -1,0 +1,102 @@
+body {
+  background-color: bisque;
+}
+
+header {
+  text-align: center;
+  color: darkblue;
+}
+
+main {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.divider {
+  width: 80%;
+  height: 4px;
+  background: rgb(0, 0, 112);
+  border: none;
+  margin: 20px auto;
+  border-radius: 2px;
+  animation: pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 10px rgb(0, 0, 112);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    box-shadow: 0 0 5px rgb(0, 0, 112);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 20px rgb(0, 0, 112);
+  }
+}
+/* .divider {
+    width: 90%;
+    height: 3px;
+    background: #888;
+    border: none;
+    margin: 20px auto;
+} */
+
+.main-board {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.question-cards {
+  display: flex;
+  justify-content: center;
+}
+.answer-cards {
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 100px;
+  /* background: lightgray; */
+  background-image: url("../img/card01.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* display: inline-block; */
+  margin: 10px;
+  line-height: 140px;
+  text-align: center;
+  font-size: 24px;
+  color: rgb(234, 234, 22);
+  cursor: pointer;
+  border-radius: 15px;
+  border: 0px solid black;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+  transition: background 0.3s;
+}
+.selected {
+  outline: 3px solid rgb(0, 34, 255);
+  box-shadow: 0 0 10px rgba(0, 72, 255, 0.875);
+  transition: outline 0.2s, box-shadow 0.2s;
+}
+
+.matched {
+  border: 5px solid limegreen;
+  box-shadow: 0 0 15px limegreen;
+  pointer-events: none;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.wrong {
+  border: 5px solid crimson;
+  box-shadow: 0 0 15px crimson;
+  transition: border 0.3s, box-shadow 0.3s;
+}
